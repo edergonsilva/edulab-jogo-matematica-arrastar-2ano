@@ -1,0 +1,963 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Arrasta Matemática — 2º Ano</title>
+  <style>
+    :root {
+      --bg: #f5fbff;
+      --card: #ffffff;
+      --primary: #3b82f6;
+      --secondary: #14b8a6;
+      --accent: #f59e0b;
+      --danger: #ef4444;
+      --success: #16a34a;
+      --text: #1f2937;
+      --muted: #64748b;
+      --border: #cbd5e1;
+      --shadow: 0 18px 40px rgba(59, 130, 246, 0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: linear-gradient(180deg, #eff6ff 0%, #fefce8 100%);
+      color: var(--text);
+    }
+
+    .app {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    .header {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .title-block h1 {
+      margin: 0;
+      font-size: clamp(2rem, 4vw, 3rem);
+      color: #1d4ed8;
+    }
+
+    .title-block p {
+      margin: 8px 0 0;
+      font-size: 1.1rem;
+      color: var(--muted);
+    }
+
+    .pill {
+      background: #dbeafe;
+      color: #1d4ed8;
+      border-radius: 999px;
+      padding: 10px 18px;
+      font-weight: 700;
+      font-size: 1rem;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(320px, 1fr) minmax(360px, 1.15fr);
+      gap: 20px;
+    }
+
+    .panel {
+      background: var(--card);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+      padding: 24px;
+      border: 3px solid rgba(255, 255, 255, 0.9);
+    }
+
+    .progress-row {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .progress-bar {
+      flex: 1;
+      min-width: 180px;
+      height: 18px;
+      background: #e2e8f0;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0;
+      background: linear-gradient(90deg, var(--secondary), var(--primary));
+      border-radius: 999px;
+      transition: width 0.3s ease;
+    }
+
+    .question-box {
+      background: #eff6ff;
+      border: 3px dashed #93c5fd;
+      border-radius: 22px;
+      padding: 24px;
+      text-align: center;
+      min-height: 180px;
+    }
+
+    .question-text {
+      font-size: clamp(2rem, 4vw, 3.5rem);
+      font-weight: 700;
+      line-height: 1.2;
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .drop-slot {
+      min-width: 108px;
+      min-height: 88px;
+      border-radius: 20px;
+      border: 4px dashed #60a5fa;
+      background: #ffffff;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: #1d4ed8;
+      font-size: 2rem;
+      font-weight: 700;
+      padding: 8px 14px;
+    }
+
+    .drop-slot.active {
+      background: #dbeafe;
+      transform: scale(1.03);
+    }
+
+    .feedback {
+      min-height: 32px;
+      margin-top: 16px;
+      font-size: 1.2rem;
+      font-weight: 700;
+    }
+
+    .feedback.success {
+      color: var(--success);
+    }
+
+    .feedback.error {
+      color: var(--danger);
+    }
+
+    .options {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 20px;
+    }
+
+    .option {
+      border: none;
+      border-radius: 18px;
+      padding: 18px;
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--text);
+      background: #fef3c7;
+      cursor: grab;
+      box-shadow: 0 8px 16px rgba(245, 158, 11, 0.18);
+      min-height: 84px;
+    }
+
+    .option:active {
+      cursor: grabbing;
+    }
+
+    .option.used {
+      opacity: 0.4;
+      cursor: default;
+    }
+
+    .helper {
+      margin-top: 14px;
+      color: var(--muted);
+      font-size: 1rem;
+      text-align: center;
+    }
+
+    .counter {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .counter-card {
+      background: #f8fafc;
+      border: 2px solid #dbeafe;
+      border-radius: 20px;
+      padding: 16px;
+      text-align: center;
+    }
+
+    .counter-card strong {
+      display: block;
+      font-size: 2rem;
+      color: #1d4ed8;
+      margin-top: 8px;
+    }
+
+    .work-area-shell {
+      display: grid;
+      grid-template-columns: minmax(150px, 200px) 1fr;
+      gap: 16px;
+      align-items: start;
+    }
+
+    .piece-bank {
+      background: #f8fafc;
+      border: 3px dashed #cbd5e1;
+      border-radius: 24px;
+      padding: 16px;
+    }
+
+    .piece-bank h3,
+    .workspace-card h3 {
+      margin-top: 0;
+      margin-bottom: 10px;
+      color: #0f172a;
+      font-size: 1.2rem;
+    }
+
+    .bank-piece {
+      width: 100%;
+      border: none;
+      background: transparent;
+      display: flex;
+      justify-content: center;
+      padding: 10px;
+      border-radius: 18px;
+      cursor: grab;
+      margin-bottom: 10px;
+    }
+
+    .bank-piece:active {
+      cursor: grabbing;
+    }
+
+    .workspace-card {
+      min-height: 520px;
+      background: #ecfeff;
+      border: 3px solid #99f6e4;
+      border-radius: 24px;
+      padding: 16px;
+      position: relative;
+    }
+
+    .workspace {
+      position: relative;
+      width: 100%;
+      min-height: 420px;
+      border-radius: 20px;
+      border: 4px dashed #2dd4bf;
+      background:
+        linear-gradient(transparent 31px, rgba(45, 212, 191, 0.08) 32px),
+        linear-gradient(90deg, transparent 31px, rgba(45, 212, 191, 0.08) 32px);
+      background-size: 32px 32px;
+      overflow: hidden;
+    }
+
+    .workspace.empty::after {
+      content: "Arraste dezenas e unidades para montar a conta do seu jeito.";
+      position: absolute;
+      inset: 24px;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      color: #0f766e;
+      font-size: 1.2rem;
+      font-weight: 700;
+      pointer-events: none;
+    }
+
+    .workspace-piece {
+      position: absolute;
+      border-radius: 12px;
+      cursor: grab;
+      box-shadow: 0 10px 18px rgba(15, 23, 42, 0.16);
+      user-select: none;
+    }
+
+    .workspace-piece:active {
+      cursor: grabbing;
+    }
+
+    .piece-unit {
+      width: 42px;
+      height: 42px;
+      background: linear-gradient(180deg, #fcd34d 0%, #f59e0b 100%);
+      border: 3px solid #b45309;
+    }
+
+    .piece-ten {
+      width: 132px;
+      height: 42px;
+      background:
+        repeating-linear-gradient(
+          90deg,
+          #60a5fa 0,
+          #60a5fa 10%,
+          #3b82f6 10%,
+          #3b82f6 20%
+        );
+      border: 3px solid #1d4ed8;
+    }
+
+    .bank-preview {
+      display: block;
+      border-radius: 12px;
+    }
+
+    .unit-preview {
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(180deg, #fcd34d 0%, #f59e0b 100%);
+      border: 3px solid #b45309;
+    }
+
+    .ten-preview {
+      width: 146px;
+      height: 48px;
+      background:
+        repeating-linear-gradient(
+          90deg,
+          #60a5fa 0,
+          #60a5fa 10%,
+          #3b82f6 10%,
+          #3b82f6 20%
+        );
+      border: 3px solid #1d4ed8;
+    }
+
+    .bank-label {
+      display: block;
+      font-size: 1rem;
+      font-weight: 700;
+      margin-top: 10px;
+      color: #334155;
+    }
+
+    .workspace-actions {
+      margin-top: 14px;
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .workspace-actions p {
+      margin: 0;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .clear-button,
+    .restart-button {
+      border: none;
+      border-radius: 16px;
+      padding: 14px 20px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      color: #fff;
+      background: linear-gradient(90deg, #f97316, #ef4444);
+    }
+
+    .restart-button {
+      background: linear-gradient(90deg, #14b8a6, #3b82f6);
+    }
+
+    .summary {
+      display: none;
+      margin-top: 20px;
+      background: #ecfccb;
+      border: 3px solid #86efac;
+      border-radius: 24px;
+      padding: 24px;
+      text-align: center;
+    }
+
+    .summary.visible {
+      display: block;
+    }
+
+    .summary h2 {
+      margin-top: 0;
+      font-size: 2rem;
+      color: #166534;
+    }
+
+    .summary p {
+      font-size: 1.2rem;
+      margin-bottom: 18px;
+    }
+
+    @media (max-width: 960px) {
+      .layout,
+      .work-area-shell {
+        grid-template-columns: 1fr;
+      }
+
+      .workspace-card {
+        min-height: auto;
+      }
+
+      .workspace {
+        min-height: 360px;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .app {
+        padding: 14px;
+      }
+
+      .options {
+        grid-template-columns: 1fr;
+      }
+
+      .counter {
+        grid-template-columns: 1fr;
+      }
+
+      .drop-slot {
+        min-width: 92px;
+        min-height: 76px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header class="header">
+      <div class="title-block">
+        <h1>Arrasta Matemática — 2º Ano</h1>
+        <p>Resolva a conta e use o material dourado para pensar com as mãos.</p>
+      </div>
+      <div class="pill" id="score-pill">Acertos: 0</div>
+    </header>
+
+    <section class="layout">
+      <div class="panel">
+        <div class="progress-row">
+          <div class="pill" id="progress-label">Questão 1 de 20</div>
+          <div class="progress-bar" aria-hidden="true">
+            <div class="progress-fill" id="progress-fill"></div>
+          </div>
+        </div>
+
+        <div class="question-box">
+          <div class="question-text" id="question-text"></div>
+          <div class="feedback" id="feedback" aria-live="polite"></div>
+        </div>
+
+        <div class="options" id="options"></div>
+        <p class="helper">Arraste a resposta certa até o espaço vazio.</p>
+
+        <section class="summary" id="summary">
+          <h2>Parabéns!</h2>
+          <p id="summary-text"></p>
+          <button class="restart-button" type="button" id="restart-button">Jogar novamente</button>
+        </section>
+      </div>
+
+      <div class="panel">
+        <div class="counter">
+          <div class="counter-card">
+            Dezenas
+            <strong id="tens-count">0</strong>
+          </div>
+          <div class="counter-card">
+            Unidades
+            <strong id="units-count">0</strong>
+          </div>
+          <div class="counter-card">
+            Total
+            <strong id="total-count">0</strong>
+          </div>
+        </div>
+
+        <div class="work-area-shell">
+          <aside class="piece-bank">
+            <h3>Banco de peças</h3>
+            <button class="bank-piece" type="button" draggable="true" data-piece-type="unit">
+              <span>
+                <span class="bank-preview unit-preview"></span>
+                <span class="bank-label">Unidade</span>
+              </span>
+            </button>
+            <button class="bank-piece" type="button" draggable="true" data-piece-type="ten">
+              <span>
+                <span class="bank-preview ten-preview"></span>
+                <span class="bank-label">Dezena</span>
+              </span>
+            </button>
+          </aside>
+
+          <section class="workspace-card">
+            <h3>Mesa de montagem</h3>
+            <div class="workspace empty" id="workspace" aria-label="Área de montagem do material dourado"></div>
+            <div class="workspace-actions">
+              <p>Monte, mova e reorganize as peças quantas vezes quiser.</p>
+              <button class="clear-button" type="button" id="clear-button">Limpar mesa</button>
+            </div>
+          </section>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const TOTAL_QUESTIONS = 20;
+    const MAX_VALUE = 30;
+
+    const elements = {
+      progressLabel: document.getElementById('progress-label'),
+      progressFill: document.getElementById('progress-fill'),
+      scorePill: document.getElementById('score-pill'),
+      questionText: document.getElementById('question-text'),
+      options: document.getElementById('options'),
+      feedback: document.getElementById('feedback'),
+      workspace: document.getElementById('workspace'),
+      tensCount: document.getElementById('tens-count'),
+      unitsCount: document.getElementById('units-count'),
+      totalCount: document.getElementById('total-count'),
+      clearButton: document.getElementById('clear-button'),
+      summary: document.getElementById('summary'),
+      summaryText: document.getElementById('summary-text'),
+      restartButton: document.getElementById('restart-button')
+    };
+
+    const state = {
+      questions: [],
+      currentIndex: 0,
+      score: 0,
+      currentQuestion: null,
+      answerLocked: false,
+      pieces: [],
+      pieceId: 0,
+      zIndex: 1
+    };
+
+    function emitGameEvent(type, payload = {}) {
+      const message = {
+        source: 'edulab-jogo-matematica-arrastar-2ano',
+        type,
+        payload,
+        timestamp: new Date().toISOString()
+      };
+
+      try {
+        if (window.parent && window.parent !== window) {
+          window.parent.postMessage(message, '*');
+        }
+      } catch (error) {
+        console.warn('Não foi possível enviar evento para a janela pai.', error);
+      }
+
+      window.postMessage(message, '*');
+    }
+
+    function randomInt(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    function shuffle(items) {
+      const copy = [...items];
+      for (let index = copy.length - 1; index > 0; index -= 1) {
+        const swapIndex = randomInt(0, index);
+        [copy[index], copy[swapIndex]] = [copy[swapIndex], copy[index]];
+      }
+      return copy;
+    }
+
+    function buildQuestionText(question) {
+      return question.parts.map((part) => (
+        part === '___'
+          ? '<span class="drop-slot" id="answer-slot" aria-label="Solte a resposta aqui">?</span>'
+          : `<span>${part}</span>`
+      )).join('');
+    }
+
+    function createQuestion() {
+      while (true) {
+        const operation = Math.random() < 0.5 ? '+' : '-';
+        const blankIndex = randomInt(0, 2);
+        let left;
+        let right;
+        let result;
+
+        if (operation === '+') {
+          left = randomInt(0, 20);
+          right = randomInt(0, 20);
+          result = left + right;
+          if (result > MAX_VALUE) {
+            continue;
+          }
+        } else {
+          left = randomInt(0, MAX_VALUE);
+          right = randomInt(0, left);
+          result = left - right;
+        }
+
+        const values = [left, right, result];
+        const correct = values[blankIndex];
+        const parts = [
+          blankIndex === 0 ? '___' : left,
+          operation,
+          blankIndex === 1 ? '___' : right,
+          '=',
+          blankIndex === 2 ? '___' : result
+        ];
+
+        if (correct < 0 || correct > MAX_VALUE) {
+          continue;
+        }
+
+        return {
+          left,
+          right,
+          result,
+          operation,
+          blankIndex,
+          correct,
+          parts,
+          options: generateOptions(correct)
+        };
+      }
+    }
+
+    function generateOptions(correct) {
+      const options = new Set([correct]);
+      while (options.size < 4) {
+        const offset = randomInt(-8, 8);
+        const candidate = Math.max(0, Math.min(MAX_VALUE, correct + offset + randomInt(-2, 2)));
+        options.add(candidate);
+      }
+      return shuffle(Array.from(options));
+    }
+
+    function generateSession() {
+      return Array.from({ length: TOTAL_QUESTIONS }, createQuestion);
+    }
+
+    function renderQuestion() {
+      const question = state.questions[state.currentIndex];
+      state.currentQuestion = question;
+      state.answerLocked = false;
+      elements.feedback.textContent = '';
+      elements.feedback.className = 'feedback';
+      elements.questionText.innerHTML = buildQuestionText(question);
+      elements.options.innerHTML = question.options.map((option) => `
+        <button class="option" type="button" draggable="true" data-option-value="${option}">
+          ${option}
+        </button>
+      `).join('');
+      updateProgress();
+    }
+
+    function updateProgress() {
+      const questionNumber = Math.min(state.currentIndex + 1, TOTAL_QUESTIONS);
+      const progress = (questionNumber / TOTAL_QUESTIONS) * 100;
+      elements.progressLabel.textContent = `Questão ${questionNumber} de ${TOTAL_QUESTIONS}`;
+      elements.progressFill.style.width = `${progress}%`;
+      elements.scorePill.textContent = `Acertos: ${state.score}`;
+    }
+
+    function showFeedback(message, kind) {
+      elements.feedback.textContent = message;
+      elements.feedback.className = `feedback ${kind}`;
+    }
+
+    function handleAnswer(value) {
+      if (state.answerLocked) {
+        return;
+      }
+
+      const numericValue = Number(value);
+      const isCorrect = numericValue === state.currentQuestion.correct;
+      emitGameEvent('question_answered', {
+        questionIndex: state.currentIndex,
+        selectedAnswer: numericValue,
+        correctAnswer: state.currentQuestion.correct,
+        correct: isCorrect
+      });
+
+      if (!isCorrect) {
+        showFeedback('Tente outra vez! Você consegue!', 'error');
+        return;
+      }
+
+      state.answerLocked = true;
+      state.score += 1;
+      const slot = document.getElementById('answer-slot');
+      if (slot) {
+        slot.textContent = numericValue;
+      }
+      elements.options.querySelectorAll('.option').forEach((optionButton) => {
+        optionButton.classList.add('used');
+        optionButton.setAttribute('aria-disabled', 'true');
+      });
+      showFeedback('Muito bem! Vamos para a próxima!', 'success');
+      emitGameEvent('score_updated', {
+        score: state.score,
+        remainingQuestions: TOTAL_QUESTIONS - state.currentIndex - 1
+      });
+
+      window.setTimeout(() => {
+        state.currentIndex += 1;
+        if (state.currentIndex >= TOTAL_QUESTIONS) {
+          finishGame();
+        } else {
+          renderQuestion();
+        }
+      }, 900);
+    }
+
+    function finishGame() {
+      elements.progressLabel.textContent = `Questão ${TOTAL_QUESTIONS} de ${TOTAL_QUESTIONS}`;
+      elements.progressFill.style.width = '100%';
+      elements.questionText.innerHTML = '<span>Você terminou as 20 contas!</span>';
+      elements.options.innerHTML = '';
+      elements.feedback.textContent = '';
+      elements.summary.classList.add('visible');
+      elements.summaryText.textContent = `Você acertou ${state.score} de ${TOTAL_QUESTIONS} questões.`;
+      emitGameEvent('game_finished', {
+        score: state.score,
+        totalQuestions: TOTAL_QUESTIONS
+      });
+    }
+
+    function restartGame() {
+      state.questions = generateSession();
+      state.currentIndex = 0;
+      state.score = 0;
+      elements.summary.classList.remove('visible');
+      clearPieces();
+      renderQuestion();
+      emitGameEvent('game_started', {
+        totalQuestions: TOTAL_QUESTIONS
+      });
+    }
+
+    function getPieceSize(type) {
+      return type === 'ten'
+        ? { width: 132, height: 42 }
+        : { width: 42, height: 42 };
+    }
+
+    function clampPosition(type, left, top) {
+      const rect = elements.workspace.getBoundingClientRect();
+      const size = getPieceSize(type);
+      const maxLeft = Math.max(0, rect.width - size.width);
+      const maxTop = Math.max(0, rect.height - size.height);
+
+      return {
+        left: Math.max(0, Math.min(left, maxLeft)),
+        top: Math.max(0, Math.min(top, maxTop))
+      };
+    }
+
+    function updateWorkspaceCounts() {
+      const tens = state.pieces.filter((piece) => piece.type === 'ten').length;
+      const units = state.pieces.filter((piece) => piece.type === 'unit').length;
+      elements.tensCount.textContent = String(tens);
+      elements.unitsCount.textContent = String(units);
+      elements.totalCount.textContent = String((tens * 10) + units);
+      elements.workspace.classList.toggle('empty', state.pieces.length === 0);
+    }
+
+    function renderWorkspace() {
+      elements.workspace.innerHTML = state.pieces.map((piece) => `
+        <div
+          class="workspace-piece ${piece.type === 'ten' ? 'piece-ten' : 'piece-unit'}"
+          draggable="true"
+          data-piece-id="${piece.id}"
+          style="left:${piece.left}px; top:${piece.top}px; z-index:${piece.zIndex};"
+          aria-label="${piece.type === 'ten' ? 'Peça de dezena' : 'Peça de unidade'}"
+        ></div>
+      `).join('');
+      updateWorkspaceCounts();
+    }
+
+    function createPiece(type, left, top) {
+      const position = clampPosition(type, left, top);
+      state.pieces.push({
+        id: `piece-${state.pieceId += 1}`,
+        type,
+        left: position.left,
+        top: position.top,
+        zIndex: ++state.zIndex
+      });
+      renderWorkspace();
+    }
+
+    function movePiece(pieceId, left, top) {
+      const piece = state.pieces.find((item) => item.id === pieceId);
+      if (!piece) {
+        return;
+      }
+      const position = clampPosition(piece.type, left, top);
+      piece.left = position.left;
+      piece.top = position.top;
+      piece.zIndex = ++state.zIndex;
+      renderWorkspace();
+    }
+
+    function clearPieces() {
+      state.pieces = [];
+      renderWorkspace();
+    }
+
+    function getDropCoordinates(event, type) {
+      const rect = elements.workspace.getBoundingClientRect();
+      const size = getPieceSize(type);
+      const left = event.clientX - rect.left - (size.width / 2);
+      const top = event.clientY - rect.top - (size.height / 2);
+      return clampPosition(type, left, top);
+    }
+
+    document.addEventListener('dragstart', (event) => {
+      const optionButton = event.target.closest('.option');
+      const bankPiece = event.target.closest('.bank-piece');
+      const workspacePiece = event.target.closest('.workspace-piece');
+
+      if (optionButton) {
+        event.dataTransfer.setData('text/answer', optionButton.dataset.optionValue);
+        return;
+      }
+
+      if (bankPiece) {
+        event.dataTransfer.setData('text/piece', JSON.stringify({
+          mode: 'new',
+          type: bankPiece.dataset.pieceType
+        }));
+        return;
+      }
+
+      if (workspacePiece) {
+        const piece = state.pieces.find((item) => item.id === workspacePiece.dataset.pieceId);
+        if (!piece) {
+          return;
+        }
+        event.dataTransfer.setData('text/piece', JSON.stringify({
+          mode: 'move',
+          id: piece.id,
+          type: piece.type
+        }));
+      }
+    });
+
+    document.addEventListener('dragover', (event) => {
+      const slot = event.target.closest('#answer-slot');
+      if (slot || event.target.closest('#workspace')) {
+        event.preventDefault();
+      }
+    });
+
+    document.addEventListener('drop', (event) => {
+      const slot = event.target.closest('#answer-slot');
+      if (slot) {
+        event.preventDefault();
+        const value = event.dataTransfer.getData('text/answer');
+        if (value) {
+          handleAnswer(value);
+        }
+        return;
+      }
+
+      const workspace = event.target.closest('#workspace');
+      if (!workspace) {
+        return;
+      }
+
+      event.preventDefault();
+      const pieceData = event.dataTransfer.getData('text/piece');
+      if (!pieceData) {
+        return;
+      }
+
+      const piece = JSON.parse(pieceData);
+      const coordinates = getDropCoordinates(event, piece.type);
+      if (piece.mode === 'new') {
+        createPiece(piece.type, coordinates.left, coordinates.top);
+      } else if (piece.mode === 'move') {
+        movePiece(piece.id, coordinates.left, coordinates.top);
+      }
+    });
+
+    document.addEventListener('dragenter', (event) => {
+      const slot = event.target.closest('#answer-slot');
+      if (slot) {
+        slot.classList.add('active');
+      }
+    });
+
+    document.addEventListener('dragleave', (event) => {
+      const slot = event.target.closest('#answer-slot');
+      if (slot) {
+        slot.classList.remove('active');
+      }
+    });
+
+    document.addEventListener('drop', () => {
+      const slot = document.getElementById('answer-slot');
+      if (slot) {
+        slot.classList.remove('active');
+      }
+    });
+
+    elements.clearButton.addEventListener('click', () => {
+      clearPieces();
+      emitGameEvent('material_cleared');
+    });
+
+    elements.restartButton.addEventListener('click', restartGame);
+
+    window.addEventListener('message', (event) => {
+      const { data } = event;
+      if (!data || typeof data !== 'object') {
+        return;
+      }
+
+      if (data.type === 'edulab:restart' || data.type === 'restart_game') {
+        restartGame();
+      }
+
+      if (data.type === 'edulab:get_state') {
+        emitGameEvent('state_snapshot', {
+          score: state.score,
+          questionIndex: state.currentIndex,
+          pieces: state.pieces,
+          mountedTotal: Number(elements.totalCount.textContent)
+        });
+      }
+    });
+
+    renderWorkspace();
+    restartGame();
+  </script>
+</body>
+</html>
