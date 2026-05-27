@@ -804,12 +804,14 @@
 
     function createPiece(type, left, top) {
       const position = clampPosition(type, left, top);
+      state.pieceId += 1;
+      state.zIndex += 1;
       state.pieces.push({
-        id: `piece-${state.pieceId += 1}`,
+        id: `piece-${state.pieceId}`,
         type,
         left: position.left,
         top: position.top,
-        zIndex: ++state.zIndex
+        zIndex: state.zIndex
       });
       renderWorkspace();
     }
@@ -820,9 +822,10 @@
         return;
       }
       const position = clampPosition(piece.type, left, top);
+      state.zIndex += 1;
       piece.left = position.left;
       piece.top = position.top;
-      piece.zIndex = ++state.zIndex;
+      piece.zIndex = state.zIndex;
       renderWorkspace();
     }
 

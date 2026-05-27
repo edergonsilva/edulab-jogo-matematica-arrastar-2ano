@@ -21,16 +21,16 @@ Jogo educativo em formato `.edugame` para crianças do 2º ano resolverem contas
 
 ## Arquivos principais
 
-- `/tmp/workspace/edergonsilva/edulab-jogo-matematica-arrastar-2ano/index.html`
-- `/tmp/workspace/edergonsilva/edulab-jogo-matematica-arrastar-2ano/manifest.json`
-- `/tmp/workspace/edergonsilva/edulab-jogo-matematica-arrastar-2ano/scripts/package-edugame.sh`
+- `index.html`
+- `manifest.json`
+- `scripts/package-edugame.sh`
 
 ## Como visualizar localmente
 
 Você pode abrir o arquivo `index.html` diretamente no navegador ou servir a pasta com um servidor simples:
 
 ```bash
-cd /tmp/workspace/edergonsilva/edulab-jogo-matematica-arrastar-2ano
+cd edulab-jogo-matematica-arrastar-2ano
 python3 -m http.server 8000
 ```
 
@@ -39,7 +39,7 @@ Depois acesse `http://localhost:8000`.
 ## Como gerar o pacote `.edugame`
 
 ```bash
-cd /tmp/workspace/edergonsilva/edulab-jogo-matematica-arrastar-2ano
+cd edulab-jogo-matematica-arrastar-2ano
 ./scripts/package-edugame.sh
 ```
 
