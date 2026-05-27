@@ -1,0 +1,205 @@
+:root {
+  --bg: #f7fbff;
+  --card: #ffffff;
+  --primary: #4e7cf7;
+  --accent: #ffb703;
+  --ok: #2ca58d;
+  --err: #d1495b;
+  --text: #1f2937;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: 'Nunito', 'Segoe UI', sans-serif;
+  background: linear-gradient(180deg, #eef6ff, var(--bg));
+  color: var(--text);
+}
+
+.container {
+  width: min(980px, 100%);
+  margin: 0 auto;
+  padding: 16px;
+  display: grid;
+  gap: 14px;
+}
+
+.header,
+.status-card,
+.question-card,
+.golden-card,
+.summary-card {
+  background: var(--card);
+  border-radius: 16px;
+  padding: 14px;
+  box-shadow: 0 8px 20px rgba(78, 124, 247, 0.12);
+}
+
+h1,
+h2,
+h3,
+p {
+  margin: 0;
+}
+
+.subtitle {
+  margin-top: 4px;
+  color: #53627d;
+}
+
+.status-card {
+  display: flex;
+  justify-content: space-between;
+  font-weight: 700;
+}
+
+.equation {
+  margin: 12px 0;
+  font-size: 2rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.drop-zone {
+  min-height: 54px;
+  border: 2px dashed var(--primary);
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  padding: 8px;
+  font-weight: 700;
+  color: #31415f;
+  background: #f4f8ff;
+}
+
+.drop-zone.success {
+  border-color: var(--ok);
+  color: var(--ok);
+  background: #e8faf6;
+}
+
+.drop-zone.error {
+  border-color: var(--err);
+  color: var(--err);
+  background: #ffeff2;
+}
+
+.feedback {
+  min-height: 24px;
+  margin-top: 8px;
+  font-weight: 700;
+}
+
+.options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 10px;
+}
+
+.option {
+  border: 2px solid #a7bffb;
+  border-radius: 12px;
+  padding: 12px;
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: 800;
+  background: #fff;
+  cursor: grab;
+  user-select: none;
+}
+
+.option:active {
+  cursor: grabbing;
+}
+
+.option.selected {
+  border-color: var(--accent);
+  background: #fff7df;
+}
+
+.golden-card {
+  display: grid;
+  gap: 12px;
+}
+
+.golden-visual {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 10px;
+}
+
+.value-card {
+  background: #f7f9ff;
+  border-radius: 12px;
+  padding: 10px;
+  border: 1px solid #d6e1ff;
+}
+
+.value-title {
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: #374767;
+}
+
+.blocks {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.ten-block {
+  width: 60px;
+  height: 12px;
+  border-radius: 8px;
+  background: #4e7cf7;
+}
+
+.unit-block {
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  background: #ffb703;
+}
+
+.lab-title {
+  font-weight: 800;
+}
+
+.lab-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.lab-controls button,
+#restartButton {
+  border: 0;
+  border-radius: 8px;
+  background: var(--primary);
+  color: white;
+  padding: 8px 10px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+#labValueText {
+  font-weight: 700;
+}
+
+.hidden {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .equation {
+    font-size: 1.7rem;
+  }
+}
