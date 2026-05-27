@@ -18,6 +18,6 @@
   "thumbnail": "assets/thumbnail.svg",
   "description": "Jogo de Matemática para o 2º ano com 20 desafios de adição e subtração no formato arrastar e soltar, com apoio visual de dezenas e unidades.",
   "status": "published",
-  "api_version": "1.0.0"
-  "author": "GitHub Copilot"
+  "api_version": "1.0.0",
+  "author": "GitHub Copilot",
 }
