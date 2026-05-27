@@ -531,7 +531,23 @@
 
   <script>
     const TOTAL_QUESTIONS = 20;
-    const MAX_VALUE = 30;
+    const MAX_QUESTION_VALUE = 30;
+    const OPTION_VARIANCE_MIN = -2;
+    const OPTION_VARIANCE_MAX = 2;
+    const FEEDBACK_DISPLAY_DURATION = 900;
+    const MESSAGE_TARGET_ORIGIN = (() => {
+      try {
+        if (document.referrer) {
+          return new URL(document.referrer).origin;
+        }
+      } catch (error) {
+        console.warn('Não foi possível determinar a origem da plataforma.', error);
+      }
+
+      return window.location.origin && window.location.origin !== 'null'
+        ? window.location.origin
+        : '*';
+    })();
 
     const elements = {
       progressLabel: document.getElementById('progress-label'),
@@ -571,13 +587,13 @@
 
       try {
         if (window.parent && window.parent !== window) {
-          window.parent.postMessage(message, '*');
+          window.parent.postMessage(message, MESSAGE_TARGET_ORIGIN);
         }
       } catch (error) {
         console.warn('Não foi possível enviar evento para a janela pai.', error);
       }
 
-      window.postMessage(message, '*');
+      window.postMessage(message, MESSAGE_TARGET_ORIGIN);
     }
 
     function randomInt(min, max) {
@@ -586,9 +602,9 @@
 
     function shuffle(items) {
       const copy = [...items];
-      for (let index = copy.length - 1; index > 0; index -= 1) {
-        const swapIndex = randomInt(0, index);
-        [copy[index], copy[swapIndex]] = [copy[swapIndex], copy[index]];
+      for (let currentIndex = copy.length - 1; currentIndex > 0; currentIndex -= 1) {
+        const randomIndex = randomInt(0, currentIndex);
+        [copy[currentIndex], copy[randomIndex]] = [copy[randomIndex], copy[currentIndex]];
       }
       return copy;
     }
@@ -602,7 +618,7 @@
     }
 
     function createQuestion() {
-      while (true) {
+      for (let attempt = 0; attempt < 100; attempt += 1) {
         const operation = Math.random() < 0.5 ? '+' : '-';
         const blankIndex = randomInt(0, 2);
         let left;
@@ -613,11 +629,11 @@
           left = randomInt(0, 20);
           right = randomInt(0, 20);
           result = left + right;
-          if (result > MAX_VALUE) {
+          if (result > MAX_QUESTION_VALUE) {
             continue;
           }
         } else {
-          left = randomInt(0, MAX_VALUE);
+          left = randomInt(0, MAX_QUESTION_VALUE);
           right = randomInt(0, left);
           result = left - right;
         }
@@ -632,7 +648,7 @@
           blankIndex === 2 ? '___' : result
         ];
 
-        if (correct < 0 || correct > MAX_VALUE) {
+        if (correct < 0 || correct > MAX_QUESTION_VALUE) {
           continue;
         }
 
@@ -647,13 +663,21 @@
           options: generateOptions(correct)
         };
       }
+
+      throw new Error('Não foi possível criar uma conta válida para a sessão.');
     }
 
     function generateOptions(correct) {
       const options = new Set([correct]);
       while (options.size < 4) {
         const offset = randomInt(-8, 8);
-        const candidate = Math.max(0, Math.min(MAX_VALUE, correct + offset + randomInt(-2, 2)));
+        const candidate = Math.max(
+          0,
+          Math.min(
+            MAX_QUESTION_VALUE,
+            correct + offset + randomInt(OPTION_VARIANCE_MIN, OPTION_VARIANCE_MAX)
+          )
+        );
         options.add(candidate);
       }
       return shuffle(Array.from(options));
@@ -733,7 +757,7 @@
         } else {
           renderQuestion();
         }
-      }, 900);
+      }, FEEDBACK_DISPLAY_DURATION);
     }
 
     function finishGame() {
