@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Arrasta Matemática — 2º Ano</title>
+    <link rel="stylesheet" href="assets/styles.css" />
+  </head>
+  <body>
+    <main class="container">
+      <header class="header">
+        <h1>Arrasta Matemática — 2º Ano</h1>
+        <p class="subtitle">Arraste a resposta correta para completar a conta.</p>
+      </header>
+
+      <section class="status-card">
+        <div id="progressText">Questão 1 de 20</div>
+        <div id="scoreText">Pontuação: 0</div>
+      </section>
+
+      <section class="question-card" aria-live="polite">
+        <h2>Resolva a conta</h2>
+        <div id="questionEquation" class="equation"></div>
+        <div id="dropZone" class="drop-zone" tabindex="0" aria-label="Solte aqui sua resposta">
+          Solte a resposta aqui
+        </div>
+        <p id="feedbackText" class="feedback"></p>
+      </section>
+
+      <section id="optionsSection">
+        <h3>Opções</h3>
+        <div id="optionsContainer" class="options"></div>
+      </section>
+
+      <section id="goldenSection" class="golden-card">
+        <h3>Apoio com material dourado</h3>
+        <div id="goldenVisual" class="golden-visual"></div>
+
+        <div class="lab-title">Laboratório (dezenas e unidades)</div>
+        <div class="lab-controls">
+          <button type="button" data-action="minus10">-10</button>
+          <button type="button" data-action="plus10">+10</button>
+          <button type="button" data-action="minus1">-1</button>
+          <button type="button" data-action="plus1">+1</button>
+          <span id="labValueText">Valor montado: 0</span>
+        </div>
+        <div id="labVisual" class="golden-visual"></div>
+      </section>
+
+      <section id="summaryCard" class="summary-card hidden">
+        <h2>Fim de jogo!</h2>
+        <p id="summaryText"></p>
+        <button id="restartButton" type="button">Jogar novamente</button>
+      </section>
+    </main>
+
+    <script src="assets/game.js"></script>
+  </body>
+</html>
