@@ -1,10 +1,10 @@
 {
-  "id": "arrasta-matematica-2ano",
+  "id": "edulab-jogo-matematica-arrastar-2ano",
   "name": "Arrasta Matemática — 2º Ano",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "developer": "EduLab Games",
   "credits": "Equipe EduLab Games",
-  "school_grades": ["2ano"],
+  "school_grades": [2],
   "subject": "matematica",
   "tags": ["matematica", "2ano", "arrastar-soltar", "dezenas", "unidades", "material-dourado"],
   "mode": ["solo"],
