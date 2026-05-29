@@ -373,6 +373,23 @@
       font-weight: 700;
     }
 
+     .remove-zone {
+      margin-top: 14px;
+      border: 3px dashed #fca5a5;
+      border-radius: 20px;
+      padding: 14px 16px;
+      text-align: center;
+      font-weight: 700;
+      color: #b91c1c;
+      background: #fef2f2;
+      transition: transform 0.2s ease, background 0.2s ease;
+    }
+
+    .remove-zone.active {
+      background: #fee2e2;
+      transform: scale(1.01);
+    }
+
     .clear-button,
     .restart-button {
       border: none;
@@ -520,8 +537,11 @@
             <h3>Mesa de montagem</h3>
             <div class="workspace empty" id="workspace" aria-label="Área de montagem do material dourado"></div>
             <div class="workspace-actions">
-              <p>Monte, mova e reorganize as peças quantas vezes quiser.</p>
+              <p>Monte, mova, reorganize e retire as peças quando quiser.</p>
               <button class="clear-button" type="button" id="clear-button">Limpar mesa</button>
+            </div>
+            <div class="remove-zone" id="remove-zone" aria-label="Arraste aqui para retirar peças da mesa">
+              Arraste uma peça até aqui para tirar da mesa.
             </div>
           </section>
         </div>
@@ -557,6 +577,7 @@
       options: document.getElementById('options'),
       feedback: document.getElementById('feedback'),
       workspace: document.getElementById('workspace'),
+      removeZone: document.getElementById('remove-zone'),
       tensCount: document.getElementById('tens-count'),
       unitsCount: document.getElementById('units-count'),
       totalCount: document.getElementById('total-count'),
@@ -853,6 +874,14 @@
       renderWorkspace();
     }
 
+    function removePiece(pieceId) {
+      const previousLength = state.pieces.length;
+      state.pieces = state.pieces.filter((piece) => piece.id !== pieceId);
+      if (state.pieces.length !== previousLength) {
+        renderWorkspace();
+      }
+    }
+
     function clearPieces() {
       state.pieces = [];
       renderWorkspace();
@@ -899,7 +928,7 @@
 
     document.addEventListener('dragover', (event) => {
       const slot = event.target.closest('#answer-slot');
-      if (slot || event.target.closest('#workspace')) {
+      if (slot || event.target.closest('#workspace') || event.target.closest('#remove-zone')) {
         event.preventDefault();
       }
     });
@@ -911,6 +940,21 @@
         const value = event.dataTransfer.getData('text/answer');
         if (value) {
           handleAnswer(value);
+        }
+        return;
+      }
+
+      const removeZone = event.target.closest('#remove-zone');
+      if (removeZone) {
+        event.preventDefault();
+        const pieceData = event.dataTransfer.getData('text/piece');
+        if (!pieceData) {
+          return;
+        }
+
+        const piece = JSON.parse(pieceData);
+        if (piece.mode === 'move') {
+          removePiece(piece.id);
         }
         return;
       }
@@ -940,12 +984,22 @@
       if (slot) {
         slot.classList.add('active');
       }
+
+      const removeZone = event.target.closest('#remove-zone');
+      if (removeZone) {
+        removeZone.classList.add('active');
+      }
     });
 
     document.addEventListener('dragleave', (event) => {
       const slot = event.target.closest('#answer-slot');
       if (slot) {
         slot.classList.remove('active');
+      }
+
+      const removeZone = event.target.closest('#remove-zone');
+      if (removeZone) {
+        removeZone.classList.remove('active');
       }
     });
 
@@ -954,6 +1008,8 @@
       if (slot) {
         slot.classList.remove('active');
       }
+
+      elements.removeZone.classList.remove('active');
     });
 
     elements.clearButton.addEventListener('click', () => {
@@ -987,63 +1043,3 @@
     restartGame();
   </script>
 </body>
-=======
-<!doctype html>
-<html lang="pt-BR">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Arrasta Matemática — 2º Ano</title>
-    <link rel="stylesheet" href="assets/styles.css" />
-  </head>
-  <body>
-    <main class="container">
-      <header class="header">
-        <h1>Arrasta Matemática — 2º Ano</h1>
-        <p class="subtitle">Arraste a resposta correta para completar a conta.</p>
-      </header>
-
-      <section class="status-card">
-        <div id="progressText">Questão 1 de 20</div>
-        <div id="scoreText">Pontuação: 0</div>
-      </section>
-
-      <section class="question-card" aria-live="polite">
-        <h2>Resolva a conta</h2>
-        <div id="questionEquation" class="equation"></div>
-        <div id="dropZone" class="drop-zone" tabindex="0" aria-label="Solte aqui sua resposta">
-          Solte a resposta aqui
-        </div>
-        <p id="feedbackText" class="feedback"></p>
-      </section>
-
-      <section id="optionsSection">
-        <h3>Opções</h3>
-        <div id="optionsContainer" class="options"></div>
-      </section>
-
-      <section id="goldenSection" class="golden-card">
-        <h3>Apoio com material dourado</h3>
-        <div id="goldenVisual" class="golden-visual"></div>
-
-        <div class="lab-title">Laboratório (dezenas e unidades)</div>
-        <div class="lab-controls">
-          <button type="button" data-action="minus10">-10</button>
-          <button type="button" data-action="plus10">+10</button>
-          <button type="button" data-action="minus1">-1</button>
-          <button type="button" data-action="plus1">+1</button>
-          <span id="labValueText">Valor montado: 0</span>
-        </div>
-        <div id="labVisual" class="golden-visual"></div>
-      </section>
-
-      <section id="summaryCard" class="summary-card hidden">
-        <h2>Fim de jogo!</h2>
-        <p id="summaryText"></p>
-        <button id="restartButton" type="button">Jogar novamente</button>
-      </section>
-    </main>
-
-    <script src="assets/game.js"></script>
-  </body>
-</html>
